@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Step 1
+{% endblock %}
+
+{% block main %}
+
+
+<form action="/uploader" method="POST" enctype="multipart/form-data" id="main">
+    <div class="form-group">
+        <table align="center">
+            <tr>
+                <td><div class="form-group">Census file:</div></td>
+                <td><div class="form-group"><input type="file" name="census" required/></div></td>
+            </tr>
+            <tr>
+            <td><div class="form-group">Footprints file:</div></td>
+            <td><div class="form-group"><input type="file" name="footprints" required/></div></td>
+            </tr>
+            <tr>
+            <td><div class="form-group">Map name/comment:</div></td>
+            <td><div class="form-group"><input type="text" name="map_caption" class="form-control" required/></div></td>
+            </tr>
+            <tr>
+            <td><div class="form-group">Dasymetric method:</div></td>
+            <td><div class="form-group"><select class="form-control" name="dasymetric_method" form="main">
+                <option value="2D">2D</option>
+                <option value="3D">3D</option>
+            </select></div></td>
+            </tr>
+            </table>
+        <div class="form-group"><button class="btn btn-primary" type="submit">Next step</button></div>
+    </div>
+</form>
+
+{% endblock %}

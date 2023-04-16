@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}
+History
+{% endblock %}
+
+{% block main %}
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        {% for th in names %}
+        <th>{{th}}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+
+    {% for tr in tbody %}
+
+    <tr>
+        <td>{{tr[1]}}</td>
+        <td>{{tr[2]| basename}}</td>
+        <td>{{tr[3]| basename}}</td>
+        <td>{{tr[4]}}</td>
+
+        {% if tr[5] %}
+        <td><a href="/share_map?map_id={{tr[0]}}&shared=0">Yes, click to unshare</a></td>
+        {% else %}
+        <td><a href="/share_map?map_id={{tr[0]}}&shared=1">No, click to share</a></td>
+        {% endif %}
+        <td><a href="/view_map?map_id={{tr[0]}}">View</a></td>
+        <td><a href="/delete_row?map_id={{tr[0]}}">Remove map</a></td>
+
+    </tr>
+
+    {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}

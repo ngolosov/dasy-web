@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Step 2
+{% endblock %}
+
+{% block main %}
+
+<table align="center">
+    <tr>
+        <td>
+            <div class="form-group">Specify the population count filed: </div>
+        </td>
+        <td>
+            <div class="form-group"><select name="census_fields" form="main">
+                {% for field in census_fields %}
+                <option value="{{field}}">{{field}}</option>
+                {% endfor %}
+            </select></div>
+        </td>
+    </tr>
+
+
+    {% if footprint_fields %}
+    <tr>
+        <td>
+            <div class="form-group">Specify the building height field: </div>
+        </td>
+        <td>
+            <div class="form-group"><select name="footprint_fields" form="main">
+                {% for field in footprint_fields %}
+                <option value="{{field}}">{{field}}</option>
+                {% endfor %}
+            </select>
+    {% endif %}
+            </div>
+        </td>
+    </tr>
+</table>
+
+<form action="/create_map" method="POST" id="main">
+    <input type="hidden" id="history_id" name="history_id" value="{{history_id}}">
+    <div class="form-group">
+        <button class="btn btn-primary" type="submit">Next step</button>
+    </div>
+</form>
+
+
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends "layout.html" %}
+
+{% block title %}
+View map
+{% endblock %}
+
+{% block main %}
+
+<h1>{{caption}}</h1><br/>
+{% if is_shared %}
+<div class="form-group">
+Note: Your map is shared, you might want to copy the sharing code below the map.
+</div>
+{% endif %}
+
+<div id="mapid"></div>
+<script>
+
+function getColor(d) {
+	return d > 100 ? '#800026' :
+	       d > 50  ? '#BD0026' :
+	       d > 20  ? '#E31A1C' :
+	       d > 10  ? '#FC4E2A' :
+	       d > 5   ? '#FD8D3C' :
+	       d > 2   ? '#FEB24C' :
+	       d > 1   ? '#FED976' :
+	                  '#FFEDA0';
+}
+
+function style(feature) {
+	return {
+		fillColor: getColor(feature.properties.pop_count),
+		weight: 1,
+		opacity: 0,
+		color: 'gray',
+		//dashArray: '3',
+		fillOpacity: 0.7
+	};
+}
+
+var geojsonFeature = {{json|safe}};
+var mymap = L.map('mapid').setView([0, 0], 14);
+L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+	attribution: '',
+	maxZoom: 18,
+	id: 'mapbox.streets',
+	accessToken: 'pk.eyJ1IjoibmV4Z2VuIiwiYSI6ImNqZ2xvbnA0bTE2MTEyeHFuOGZ6OHk3amQifQ.DNOe9xAUNCoBquUxTK0kbA'
+}).addTo(mymap);
+
+var geojsonLayer = L.geoJSON(geojsonFeature, {onEachFeature: function (feature, layer) {layer.bindPopup('Population: ' + Math.round(feature.properties.pop_count));}
+,style: style}).addTo(mymap);
+mymap.fitBounds(geojsonLayer.getBounds());
+
+var legend = L.control({position: 'bottomright'});
+
+legend.onAdd = function (mymap) {
+
+	var div = L.DomUtil.create('div', 'info legend'),
+		grades = [0, 1, 2, 5, 10, 20, 50, 100],
+		labels = [];
+
+	// loop through our density intervals and generate a label with a colored square for each interval
+	for (var i = 0; i < grades.length; i++) {
+		div.innerHTML +=
+			'<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+			grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+	}
+
+	return div;
+};
+
+legend.addTo(mymap);
+
+</script>
+<div class="form-group"></div>
+
+<div class="form-group" align="right">
+<a href="/export_shp?map_id={{map_id}}"><button class="btn btn-primary" type="submit">Export map as SHP</button></a>
+</div>
+{% if is_shared %}
+
+<div class="form-group"></div>
+<div class="form-group">Use <a href="{{request.url_root}}public_map?map_id={{map_id}}">the following link</a> to share the map:</div>
+<div class="form-group">
+<textarea id="url" cols="100" rows="1">{{request.url_root}}public_map?map_id={{map_id}}</textarea>
+</div>
+<div class="form-group">Use the following code to embed the map on your website: </div>
+<div class="form-group">
+    <textarea id="sharing_code" cols="100" rows="3"><iframe src={{request.url_root}}public_map?map_id={{map_id}}></iframe></textarea>
+</div>
+
+
+{% endif %}
+
+{% endblock %}
